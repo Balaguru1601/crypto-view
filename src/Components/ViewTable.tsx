@@ -144,7 +144,6 @@ const ViewTable = (props: Props) => {
 	};
 
 	const applyFilter = (filterData: filterType) => {
-		console.log(filterData);
 		const filteredResult = gCryptoData.filter(
 			(d) =>
 				+filterData.changeMax >= +d.percent_change_24h &&
