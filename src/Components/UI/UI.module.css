@@ -1,0 +1,75 @@
+.backdrop {
+	position: fixed;
+	background-color: rgb(1, 1, 1, 0.5);
+	height: 100vh;
+	width: 100%;
+	top: 0;
+	left: 0;
+	z-index: 10;
+}
+
+.modalOverlay {
+	position: fixed;
+	top: 50vh;
+	left: 50vw;
+	transform: translateY(-50%);
+	z-index: 100;
+	/* overflow: hidden; */
+	left: 25%;
+	width: 50%;
+	background-color: var(--blue-fill);
+	padding: 2rem;
+	border-radius: 10px;
+	color: var(--primary-blue);
+}
+
+.modalContent {
+	display: flex;
+	justify-content: space-evenly;
+	flex-wrap: wrap;
+}
+
+.modalOverlay .serviceBox {
+	padding-top: 5%;
+	padding-bottom: 5%;
+}
+
+.closeBtn {
+	position: absolute;
+	left: 100%;
+	top: 0;
+	transform: translateX(-200%);
+	padding: 0.2rem;
+	font-size: large;
+	background-color: transparent;
+	color: var(--header-btn-color);
+}
+
+@media (max-width: 1550px) {
+	.modalOverlay {
+		width: 70%;
+		left: 15%;
+		padding: 2rem;
+	}
+}
+
+@media (max-width: 987px) {
+	.modalOverlay {
+		width: 80%;
+		left: 10%;
+		padding-bottom: 2rem;
+	}
+}
+
+@media (max-width: 720px) {
+	.modalOverlay {
+		left: 5%;
+	}
+}
+
+@media (max-width: 420px) {
+	.modalOverlay {
+		left: 5%;
+		padding: 0.5rem;
+	}
+}

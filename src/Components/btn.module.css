@@ -1,0 +1,17 @@
+.sortBtn {
+	padding: 1rem;
+	padding-top: 0.5rem;
+	padding-bottom: 0.5rem;
+	background-color: inherit;
+	font-weight: 700;
+	color: #667085;
+	border: 1px solid transparent;
+}
+
+.sortBtn i {
+	color: var(--primary-blue);
+}
+
+.sortBtn:hover {
+	border-color: var(--primary-blue);
+}

@@ -1,0 +1,191 @@
+.tableWrapper {
+	padding: 1rem;
+	max-width: 1100px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.table {
+	border-collapse: collapse;
+	text-align: left;
+	color: var(--primary-text);
+	margin-left: auto;
+	margin-right: auto;
+	padding: 1rem;
+	overflow-x: scroll;
+}
+
+p {
+	color: #e63946;
+}
+
+td,
+th {
+	padding: 1rem;
+	border-top: 1px solid #eaecf0;
+}
+
+th {
+	padding: 0.1rem;
+	background-color: var(--primary-gray);
+	color: #667085;
+	font-weight: 500;
+}
+
+th:last-child,
+th:first-child {
+	padding-left: 1rem;
+	padding-right: 1rem;
+}
+
+.captionBar {
+	display: grid;
+	grid-template-columns: 2fr 1fr;
+	padding-bottom: 1.5rem;
+}
+
+.heading,
+.searchBar {
+	display: inline-block;
+}
+
+.heading {
+	color: var(--primary-blue);
+}
+
+.searchBar input {
+	background-color: #ffffff;
+	border: 1px solid var(--primary-gray);
+	font-size: large;
+	padding: 0.5rem;
+	border-radius: 0.5rem;
+	color: var(--header-btn-color);
+	min-width: 250px;
+	width: 70%;
+	box-shadow: 0 2px 6px 1px rgba(0, 0, 0, 0.15);
+}
+
+.searchBar i {
+	position: relative;
+	right: 2rem;
+}
+
+.upBadge,
+.downBadge {
+	border-radius: 1rem;
+	padding: 0.5rem 0.8rem;
+	color: var(--green-text);
+	font-weight: 500;
+}
+
+.upBadge {
+	background-color: var(--green-fill);
+}
+
+.upBadge i {
+	color: var(--green-icon);
+}
+
+.downBadge {
+	background-color: var(--red-fill);
+	color: #bf4b3e;
+}
+
+.highlight {
+	color: var(--primary-blue);
+	background-color: var(--blue-fill);
+}
+
+.table tfoot {
+	width: 100%;
+	display: block;
+}
+
+.table tfoot div {
+	margin-left: 100%;
+}
+
+.paginationBtn,
+.refreshBtn {
+	margin-right: 0.25rem;
+	margin-left: 0.25rem;
+	padding: 0.2rem;
+	color: var(--primary-blue);
+	background-color: transparent;
+}
+
+.filterWrapper .inputWrapper {
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	grid-template-areas: "a b c";
+	padding-bottom: 0.5rem;
+}
+
+.inputWrapper label {
+	padding-left: 0.5rem;
+	padding-right: 0.5rem;
+	grid-area: a;
+}
+
+.inputWrapper span {
+	display: block;
+	padding: 0 0.5rem;
+	grid-area: b;
+}
+
+.inputWrapper span:last-child {
+	grid-area: c;
+}
+
+.inputWrapper input {
+	width: -webkit-fill-available;
+	font-size: 1rem;
+}
+
+.filterBtn {
+	background-color: var(--primary-blue);
+	padding: 0.5rem;
+	margin-right: 0.2rem;
+}
+
+@media (max-width: 910px) {
+	.tableWrapper {
+		overflow-x: scroll;
+	}
+
+	.captionBar {
+		grid-template-columns: 1fr;
+	}
+
+	.searchBar {
+		margin-bottom: 1rem;
+	}
+
+	.pagination {
+		text-align: left;
+	}
+}
+
+@media (max-width: 650px) {
+	.filterWrapper .inputWrapper {
+		grid-template-columns: 1fr 1fr;
+		grid-template-areas:
+			"a a"
+			"b c"
+			"b c";
+	}
+}
+
+@media (max-width: 420px) {
+	.inputWrapper span {
+		padding: 0;
+	}
+}
+
+@media (max-width: 400px) {
+	.searchBar i {
+		right: 0;
+		left: 115px;
+		bottom: 2rem;
+	}
+}
