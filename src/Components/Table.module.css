@@ -176,6 +176,16 @@ th:first-child {
 	}
 }
 
+@media (max-width: 650px) {
+	.filterWrapper .inputWrapper {
+		grid-template-columns: 1fr;
+		grid-template-areas:
+			"a "
+			"b "
+			"c";
+	}
+}
+
 @media (max-width: 420px) {
 	.inputWrapper span {
 		padding: 0;
@@ -184,8 +194,6 @@ th:first-child {
 
 @media (max-width: 400px) {
 	.searchBar i {
-		right: 0;
-		left: 115px;
-		bottom: 2rem;
+		display: none;
 	}
 }
