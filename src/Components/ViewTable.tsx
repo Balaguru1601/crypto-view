@@ -31,11 +31,20 @@ interface cryptoType {
 	msupply: string;
 }
 
+interface filterType {
+	changeMax: string;
+	changeMin: string;
+	rankMax: string;
+	rankMin: string;
+	priceMax: string;
+	priceMin: string;
+}
+
 const filterOptions = {
 	changeMax: "",
 	changeMin: "",
-	rankMax: 100,
-	rankMin: 1,
+	rankMax: "100",
+	rankMin: "1",
 	priceMax: "",
 	priceMin: "",
 };
@@ -79,81 +88,75 @@ const ViewTable = (props: Props) => {
 	const [error, setError] = useState<string | null>(null);
 	const [derror, setDerror] = useState<string | null>(null);
 	const [filterUsed, setFilterUsed] = useState(false);
-	const [filterSelects, setFilterSelects] = useState<{
-		changeMax: string;
-		changeMin: string;
-		rankMax: number;
-		rankMin: number;
-		priceMax: string;
-		priceMin: string;
-	}>({
+	const [filterSelects, setFilterSelects] = useState<filterType>({
 		changeMax: "",
 		changeMin: "",
-		rankMax: 100,
-		rankMin: 1,
+		rankMax: "100",
+		rankMin: "1",
 		priceMax: "",
 		priceMin: "",
 	});
-	const [filterLimits, setFilterLimits] = useState<{
-		changeMax: string;
-		changeMin: string;
-		rankMax: number;
-		rankMin: number;
-		priceMax: string;
-		priceMin: string;
-	}>({
+	const [filterLimits, setFilterLimits] = useState<filterType>({
 		changeMax: "",
 		changeMin: "",
-		rankMax: 100,
-		rankMin: 1,
+		rankMax: "100",
+		rankMin: "1",
 		priceMax: "",
 		priceMin: "",
 	});
 
-	const validateFilterValues = () => {
-		if (filterSelects.changeMax === "")
-			setFilterSelects({ ...filterSelects, changeMax: "0" });
-		if (filterSelects.changeMin === "")
-			setFilterSelects({ ...filterSelects, changeMin: "0" });
-		if (filterSelects.priceMax === "")
-			setFilterSelects({ ...filterSelects, priceMax: "0" });
-		if (filterSelects.priceMin === "")
-			setFilterSelects({ ...filterSelects, priceMin: "0" });
+	const validateFilterValues = (): {
+		filters?: filterType;
+		validity: boolean;
+	} => {
+		const copy = { ...filterSelects };
+		if (filterSelects.changeMax === "") {
+			copy.changeMax = "0";
+		}
+		if (filterSelects.changeMin === "") {
+			copy.changeMin = "0";
+		}
+		if (filterSelects.priceMax === "") {
+			copy.priceMax = "0";
+		}
+		if (filterSelects.priceMin === "") {
+			copy.priceMin = "0";
+		}
+		if (filterSelects.rankMax === "") {
+			copy.rankMax = "1";
+		}
+		if (filterSelects.rankMin === "") {
+			copy.rankMin = "1";
+		}
+		setFilterSelects(copy);
 		if (
-			+filterSelects.changeMax > +filterSelects.changeMin &&
-			+filterSelects.priceMax > +filterSelects.priceMin &&
-			+filterSelects.rankMax > +filterSelects.rankMin
+			+copy.changeMax >= +copy.changeMin &&
+			+copy.priceMax >= +copy.priceMin &&
+			+copy.rankMax >= +copy.rankMin
 		)
-			return true;
-		return false;
+			return {
+				validity: true,
+				filters: copy,
+			};
+		return {
+			validity: false,
+		};
 	};
 
-	const applyFilter = () => {
-		console.log(validateFilterValues());
+	const applyFilter = (filterData: filterType) => {
 		const filteredResult = gCryptoData.filter(
 			(d) =>
-				+filterSelects.changeMax >= +d.percent_change_24h &&
-				+filterSelects.changeMin <= +d.percent_change_24h &&
-				+filterSelects.priceMax >= +d.price_usd &&
-				+filterSelects.priceMin <= +d.price_usd &&
-				filterSelects.rankMax >= d.rank &&
-				filterSelects.rankMin <= d.rank
+				+filterData.changeMax >= +d.percent_change_24h &&
+				+filterData.changeMin <= +d.percent_change_24h &&
+				+filterData.priceMax >= +d.price_usd &&
+				+filterData.priceMin <= +d.price_usd &&
+				+filterData.rankMax >= d.rank &&
+				+filterData.rankMin <= d.rank
 		);
-		// if()
 		if (filteredResult.length === 0) setDerror("No values found!");
 		setPageCount(1);
 		setHighlight(null);
-		setCryptoData(
-			gCryptoData.filter(
-				(d) =>
-					+filterSelects.changeMax >= +d.percent_change_24h &&
-					+filterSelects.changeMin <= +d.percent_change_24h &&
-					+filterSelects.priceMax >= +d.price_usd &&
-					+filterSelects.priceMin <= +d.price_usd &&
-					filterSelects.rankMax >= d.rank &&
-					filterSelects.rankMin <= d.rank
-			)
-		);
+		setCryptoData(filteredResult);
 	};
 
 	const filterComponent = (
@@ -204,8 +207,7 @@ const ViewTable = (props: Props) => {
 							validateNumber(e.target.value) &&
 							setFilterSelects({
 								...filterSelects,
-								rankMin:
-									+e.target.value === 0 ? 1 : +e.target.value,
+								rankMin: e.target.value,
 							})
 						}
 						value={filterSelects.rankMin}
@@ -222,8 +224,7 @@ const ViewTable = (props: Props) => {
 							validateNumber(e.target.value) &&
 							setFilterSelects({
 								...filterSelects,
-								rankMax:
-									+e.target.value === 0 ? 1 : +e.target.value,
+								rankMax: e.target.value,
 							})
 						}
 						value={filterSelects.rankMax}
@@ -266,8 +267,9 @@ const ViewTable = (props: Props) => {
 			</span>
 			<button
 				onClick={() => {
-					if (validateFilterValues()) {
-						applyFilter();
+					const validationResult = validateFilterValues();
+					if (validationResult.validity) {
+						applyFilter(validationResult.filters!);
 						setOpenFilter(false);
 						setFilterUsed(true);
 					} else setError("Please enter valid filter values!");
@@ -545,12 +547,6 @@ const ViewTable = (props: Props) => {
 															: classes.downBadge
 													}
 												>
-													{/* {item.percent_change_24h !== 0 &&
-									item.percent_change_24h < 0 ? (
-										<i className="bi bi-arrow-down-right"></i>
-									) : (
-										<i className="bi bi-arrow-up-right"></i>
-                                    )} */}
 													• {item.percent_change_24h}
 												</span>
 											</td>
