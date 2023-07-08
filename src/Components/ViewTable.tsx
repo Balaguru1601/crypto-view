@@ -305,12 +305,23 @@ const ViewTable = (props: Props) => {
 
 	const searchHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const term = event.target.value.trim();
+		setDerror(null);
 		if (term === "") setCryptoData(gCryptoData);
 		else if (/^\d+$/.test(term)) {
+			if (
+				gCryptoData.filter((data) => data.id.startsWith(term))
+					.length === 0
+			)
+				setDerror("No values found!");
 			setCryptoData(
 				gCryptoData.filter((data) => data.id.startsWith(term))
 			);
 		} else if (/^[a-zA-Z]+$/.test(term)) {
+			if (
+				gCryptoData.filter((data) => data.nameid.startsWith(term))
+					.length === 0
+			)
+				setDerror("No values found!");
 			setCryptoData(
 				gCryptoData.filter((data) => data.nameid.startsWith(term))
 			);
@@ -327,8 +338,6 @@ const ViewTable = (props: Props) => {
 				/>
 			)}
 			<h3 className={classes.heading}>Crypto View</h3>
-			{loading && <p>Loading...</p>}
-			{derror && <p>{derror}</p>}
 			<header className={classes.captionBar}>
 				<div className={classes.searchBar}>
 					<input
@@ -376,6 +385,8 @@ const ViewTable = (props: Props) => {
 					</button>
 				</div>
 			</header>
+			{loading && <p>Loading...</p>}
+			{derror && <p>{derror}</p>}
 			{!loading && !derror && (
 				<>
 					<table className={classes.table}>
