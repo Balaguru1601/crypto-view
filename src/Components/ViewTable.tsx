@@ -111,16 +111,25 @@ const ViewTable = (props: Props) => {
 	});
 
 	const validateFilterValues = () => {
+		if (filterSelects.changeMax === "")
+			setFilterSelects({ ...filterSelects, changeMax: "0" });
+		if (filterSelects.changeMin === "")
+			setFilterSelects({ ...filterSelects, changeMin: "0" });
+		if (filterSelects.priceMax === "")
+			setFilterSelects({ ...filterSelects, priceMax: "0" });
+		if (filterSelects.priceMin === "")
+			setFilterSelects({ ...filterSelects, priceMin: "0" });
 		if (
-			+filterLimits.changeMax > +filterLimits.changeMin &&
-			+filterLimits.priceMax > +filterLimits.priceMin &&
-			+filterLimits.rankMax > +filterLimits.rankMin
+			+filterSelects.changeMax > +filterSelects.changeMin &&
+			+filterSelects.priceMax > +filterSelects.priceMin &&
+			+filterSelects.rankMax > +filterSelects.rankMin
 		)
 			return true;
 		return false;
 	};
 
 	const applyFilter = () => {
+		console.log(validateFilterValues());
 		const filteredResult = gCryptoData.filter(
 			(d) =>
 				+filterSelects.changeMax >= +d.percent_change_24h &&
@@ -130,6 +139,7 @@ const ViewTable = (props: Props) => {
 				filterSelects.rankMax >= d.rank &&
 				filterSelects.rankMin <= d.rank
 		);
+		// if()
 		if (filteredResult.length === 0) setDerror("No values found!");
 		setPageCount(1);
 		setHighlight(null);
