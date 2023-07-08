@@ -3,7 +3,12 @@ import classes from "./Table.module.css";
 import SortBtn from "./SortBtn";
 import axios from "axios";
 import Modal from "./UI/Modal";
-import { sortByNumber } from "./utilities/SortFunctions";
+import {
+	sortByNumber,
+	validateFloat,
+	validateNumber,
+	validatePositiveFloat,
+} from "./utilities/SortFunctions";
 
 type Props = {};
 
@@ -27,50 +32,39 @@ interface cryptoType {
 }
 
 const filterOptions = {
-	changeMax: 0,
-	changeMin: 0,
+	changeMax: "",
+	changeMin: "",
 	rankMax: 100,
 	rankMin: 1,
-	priceMax: 0,
-	priceMin: 0,
-};
-
-const filterData = {
-	changeMax: 0,
-	changeMin: 0,
-	rankMax: 100,
-	rankMin: 1,
-	priceMax: 0,
-	priceMin: 0,
+	priceMax: "",
+	priceMin: "",
 };
 
 const getInitialData = async () => {
 	const data: cryptoType[] = (
 		await axios.get("https://api.coinlore.net/api/tickers/")
 	).data.data;
-	filterOptions.changeMax = +sortByNumber(
+	filterOptions.changeMax = sortByNumber(
 		data,
 		"dsc",
 		"percent_change_24h"
 	)[0].percent_change_24h;
-	filterOptions.changeMin = +sortByNumber(
+	filterOptions.changeMin = sortByNumber(
 		data,
 		"asc",
 		"percent_change_24h"
 	)[0].percent_change_24h;
-	filterOptions.priceMin = +sortByNumber(data, "asc", "price_usd")[0]
-		.price_usd;
-	filterOptions.priceMax = +sortByNumber(data, "dsc", "price_usd")[0]
-		.price_usd;
+	filterOptions.priceMin = sortByNumber(
+		data,
+		"asc",
+		"price_usd"
+	)[0].price_usd;
+	filterOptions.priceMax = sortByNumber(
+		data,
+		"dsc",
+		"price_usd"
+	)[0].price_usd;
 	return data;
-};
-
-const validateFloat = (value: string) => {
-	return /^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$/.test(value) || value === "";
-};
-
-const validateNumber = (value: string) => {
-	return (+value <= 100 && +value > 0) || value === "";
 };
 
 const ViewTable = (props: Props) => {
@@ -86,41 +80,41 @@ const ViewTable = (props: Props) => {
 	const [derror, setDerror] = useState<string | null>(null);
 	const [filterUsed, setFilterUsed] = useState(false);
 	const [filterSelects, setFilterSelects] = useState<{
-		changeMax: number;
-		changeMin: number;
+		changeMax: string;
+		changeMin: string;
 		rankMax: number;
 		rankMin: number;
-		priceMax: number;
-		priceMin: number;
+		priceMax: string;
+		priceMin: string;
 	}>({
-		changeMax: 0,
-		changeMin: 0,
+		changeMax: "",
+		changeMin: "",
 		rankMax: 100,
 		rankMin: 1,
-		priceMax: 0,
-		priceMin: 0,
+		priceMax: "",
+		priceMin: "",
 	});
 	const [filterLimits, setFilterLimits] = useState<{
-		changeMax: number;
-		changeMin: number;
+		changeMax: string;
+		changeMin: string;
 		rankMax: number;
 		rankMin: number;
-		priceMax: number;
-		priceMin: number;
+		priceMax: string;
+		priceMin: string;
 	}>({
-		changeMax: 0,
-		changeMin: 0,
+		changeMax: "",
+		changeMin: "",
 		rankMax: 100,
 		rankMin: 1,
-		priceMax: 0,
-		priceMin: 0,
+		priceMax: "",
+		priceMin: "",
 	});
 
 	const validateFilterValues = () => {
 		if (
-			filterLimits.changeMax > filterLimits.changeMin &&
-			filterLimits.priceMax > filterLimits.priceMin &&
-			filterLimits.rankMax > filterLimits.rankMin
+			+filterLimits.changeMax > +filterLimits.changeMin &&
+			+filterLimits.priceMax > +filterLimits.priceMin &&
+			+filterLimits.rankMax > +filterLimits.rankMin
 		)
 			return true;
 		return false;
@@ -129,10 +123,10 @@ const ViewTable = (props: Props) => {
 	const applyFilter = () => {
 		const filteredResult = gCryptoData.filter(
 			(d) =>
-				filterSelects.changeMax >= +d.percent_change_24h &&
-				filterSelects.changeMin <= +d.percent_change_24h &&
-				filterSelects.priceMax >= +d.price_usd &&
-				filterSelects.priceMin <= +d.price_usd &&
+				+filterSelects.changeMax >= +d.percent_change_24h &&
+				+filterSelects.changeMin <= +d.percent_change_24h &&
+				+filterSelects.priceMax >= +d.price_usd &&
+				+filterSelects.priceMin <= +d.price_usd &&
 				filterSelects.rankMax >= d.rank &&
 				filterSelects.rankMin <= d.rank
 		);
@@ -142,10 +136,10 @@ const ViewTable = (props: Props) => {
 		setCryptoData(
 			gCryptoData.filter(
 				(d) =>
-					filterSelects.changeMax >= +d.percent_change_24h &&
-					filterSelects.changeMin <= +d.percent_change_24h &&
-					filterSelects.priceMax >= +d.price_usd &&
-					filterSelects.priceMin <= +d.price_usd &&
+					+filterSelects.changeMax >= +d.percent_change_24h &&
+					+filterSelects.changeMin <= +d.percent_change_24h &&
+					+filterSelects.priceMax >= +d.price_usd &&
+					+filterSelects.priceMin <= +d.price_usd &&
 					filterSelects.rankMax >= d.rank &&
 					filterSelects.rankMin <= d.rank
 			)
@@ -160,14 +154,12 @@ const ViewTable = (props: Props) => {
 				<span>
 					<small>Min ({filterLimits.changeMin}):</small>
 					<input
-						type="number"
-						min={filterLimits.changeMin}
-						max={filterLimits.changeMax}
+						type="text"
 						onChange={(e) =>
 							validateFloat(e.target.value) &&
 							setFilterSelects({
 								...filterSelects,
-								changeMin: +e.target.value,
+								changeMin: e.target.value,
 							})
 						}
 						value={filterSelects.changeMin}
@@ -177,14 +169,12 @@ const ViewTable = (props: Props) => {
 				<span>
 					<small>Max ({filterLimits.changeMax}):</small>
 					<input
-						type="number"
-						min={filterLimits.changeMin}
-						max={filterLimits.changeMax}
+						type="text"
 						onChange={(e) =>
 							validateFloat(e.target.value) &&
 							setFilterSelects({
 								...filterSelects,
-								changeMax: +e.target.value,
+								changeMax: e.target.value,
 							})
 						}
 						value={filterSelects.changeMax}
@@ -197,14 +187,15 @@ const ViewTable = (props: Props) => {
 				<span>
 					<small>Min ({filterLimits.rankMin}):</small>
 					<input
-						type="number"
+						type="text"
 						min={0}
 						max={100}
 						onChange={(e) =>
 							validateNumber(e.target.value) &&
 							setFilterSelects({
 								...filterSelects,
-								rankMin: +e.target.value,
+								rankMin:
+									+e.target.value === 0 ? 1 : +e.target.value,
 							})
 						}
 						value={filterSelects.rankMin}
@@ -214,14 +205,15 @@ const ViewTable = (props: Props) => {
 				<span>
 					<small>Max ({filterLimits.rankMax}):</small>
 					<input
-						type="number"
+						type="text"
 						min={0}
 						max={100}
 						onChange={(e) =>
 							validateNumber(e.target.value) &&
 							setFilterSelects({
 								...filterSelects,
-								rankMax: +e.target.value,
+								rankMax:
+									+e.target.value === 0 ? 1 : +e.target.value,
 							})
 						}
 						value={filterSelects.rankMax}
@@ -234,14 +226,12 @@ const ViewTable = (props: Props) => {
 				<span>
 					<small>Min ({filterLimits.priceMin}):</small>
 					<input
-						type="number"
-						min={filterLimits.priceMin}
-						max={filterLimits.priceMax}
+						type="text"
 						onChange={(e) =>
-							validateFloat(e.target.value) &&
+							validatePositiveFloat(e.target.value) &&
 							setFilterSelects({
 								...filterSelects,
-								priceMin: +e.target.value,
+								priceMin: e.target.value,
 							})
 						}
 						value={filterSelects.priceMin}
@@ -251,14 +241,12 @@ const ViewTable = (props: Props) => {
 				<span>
 					<small>Max ({filterLimits.priceMax}):</small>
 					<input
-						type="number"
-						min={filterLimits.priceMin}
-						max={filterLimits.priceMax}
+						type="text"
 						onChange={(e) =>
-							validateFloat(e.target.value) &&
+							validatePositiveFloat(e.target.value) &&
 							setFilterSelects({
 								...filterSelects,
-								priceMax: +e.target.value,
+								priceMax: e.target.value,
 							})
 						}
 						value={filterSelects.priceMax}
@@ -306,6 +294,7 @@ const ViewTable = (props: Props) => {
 	const searchHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const term = event.target.value.trim();
 		setDerror(null);
+		setPageCount(1);
 		if (term === "") setCryptoData(gCryptoData);
 		else if (/^\d+$/.test(term)) {
 			if (

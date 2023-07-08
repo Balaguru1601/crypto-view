@@ -38,3 +38,19 @@ export const sortByNumber = (
 	if (type === "asc") return ret;
 	return ret.reverse();
 };
+
+export const validateFloat = (value: string) => {
+	return (
+		/^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$/.test(value) ||
+		value === "-" ||
+		value === ""
+	);
+};
+
+export const validatePositiveFloat = (value: string) => {
+	return /^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$/.test(value) || value === "";
+};
+
+export const validateNumber = (value: string) => {
+	return (+value <= 100 && +value > 0) || value === "";
+};
