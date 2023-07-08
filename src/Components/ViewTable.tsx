@@ -144,6 +144,7 @@ const ViewTable = (props: Props) => {
 	};
 
 	const applyFilter = (filterData: filterType) => {
+		console.log(filterData);
 		const filteredResult = gCryptoData.filter(
 			(d) =>
 				+filterData.changeMax >= +d.percent_change_24h &&
@@ -154,6 +155,7 @@ const ViewTable = (props: Props) => {
 				+filterData.rankMin <= d.rank
 		);
 		if (filteredResult.length === 0) setDerror("No values found!");
+		else setDerror(null);
 		setPageCount(1);
 		setHighlight(null);
 		setCryptoData(filteredResult);
